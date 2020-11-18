@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price in hours</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./cookie.js"></script>
+    <script src="./avc.js"></script> <!-- only used in production -->
+</head>
+<body>
+    <div class="container">
+        <h2>How many hours do I need to work to buy something?</h2>
+
+        <div class="input-group">
+            <label for="income">Monthly income:</label>
+            <input type="number" id="income" name="income" class="inputs" value="6700">
+        </div>
+
+        <div class="input-group">
+            <label for="num-days">How many days do you work in a month?</label>
+            <input type="number" name="num-days" id="num-days" class="inputs" value="22">
+        </div>
+
+        <div class="input-group">
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" class="inputs">
+        </div>
+
+        <h2 id="price-ih-hrs">&nbsp;</h2>
+
+        <div style="margin-top: 30px;">
+            <a href="https://github.com/augustplaninsek/price-in-hours" target="_blank">
+                View on GitHub
+            </a>
+        </div>
+
+        <div style="margin-top: 30px;">
+            Developed by:
+            <a href="https://planinsek.net" target="_blank">
+                <img src="planinsek_logo.png" alt="logo" width="15px">
+                August Planinšek
+            </a>
+        </div>
+
+        <div style="margin-top: 50px;">
+            Privacy:
+            <br>
+            <small>
+                Monthly income and number of workdays will be saved in a local cookie so you dont have to enter
+                that data again.
+                We collect only number of visitors. No other data is sent or collected.
+            </small>
+        </div>
+
+    </div>
+
+
+    <script>
+        let cookie = getCookie('constData');
+        if (cookie){
+            let data = JSON.parse(cookie);
+            document.querySelector('#income').value = data.incomeMonth;
+            document.querySelector('#num-days').value = data.numDays;
+        }
+
+        const calculatePrice = () => {
+            let save = {}
+            let incomeMonth = document.querySelector('#income').value;
+            let numDays = document.querySelector('#num-days').value;
+            let price = document.querySelector('#price').value;
+            let constData = {
+                'incomeMonth': incomeMonth,
+                'numDays': numDays
+            }
+            setCookie("constData", JSON.stringify(constData));
+
+            let incomeHour = incomeMonth / numDays / 8;
+            let priceInHours = Math.ceil(price / incomeHour);
+
+            let resultString = ``;
+            if (priceInHours > 8){
+                let days = Math.floor(priceInHours / 8);
+                resultString += `${days} day${ (days > 1 ? 's' : '') }`;
+                priceInHours = priceInHours - days * 8;
+            }
+            if (priceInHours > 0) {
+                resultString += ` ${ priceInHours } hour${ (priceInHours > 1 ? 's' : '') }`;
+            }
+            document.querySelector('#price-ih-hrs').textContent = resultString;
+        }
+
+        let inputs = document.querySelectorAll('.inputs')
+        inputs.forEach(input => {
+            input.addEventListener("keyup", calculatePrice);
+        })
+    </script>
+</body>
+</html>
