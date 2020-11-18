@@ -73,7 +73,7 @@
                 'incomeMonth': incomeMonth,
                 'numDays': numDays
             }
-            setCookie("constData", JSON.stringify(constData));
+            setCookie("constData", JSON.stringify(constData), 180);
 
             let incomeHour = incomeMonth / numDays / 8;
             let priceInHours = Math.ceil(price / incomeHour);
